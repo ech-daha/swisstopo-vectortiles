@@ -12,8 +12,8 @@
 
     <!-- ArcGIS & Calcite Components -->
     <script type="module" src="https://js.arcgis.com/calcite-components/3.3.3/calcite.esm.js"></script>
-    <script src="https://js.arcgis.com/4.34/"></script>
-    <script type="module" src="https://js.arcgis.com/map-components/4.34"></script>
+    <script type="module" src="https://js.arcgis.com/5.0/"></script>
+    <script type="module" src="https://js.arcgis.com/map-components/5.0/"></script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -179,18 +179,11 @@
                 </div>
             </div>
             <div class="map-container">
-                <arcgis-map id="originalMap" center="7.359, 46.231" zoom="10">
-
-                </arcgis-map>
+                <div id="originalMap" style="width:100%;height:100%;"></div>
                 <div class="loading-overlay" id="originalLoading">
                     <div class="loading-spinner"></div>
                     <div class="loading-text" style="font-size: 0.8rem; color: var(--text-muted);">Initialising...
                     </div>
-                </div>
-            </div>
-            <div class="map-footer">
-                <div class="map-footer-info">
-                    <div class="info-item">Zoom: <span id="originalZoom">10</span></div>
                 </div>
             </div>
         </div>
@@ -206,17 +199,11 @@
                 </div>
             </div>
             <div class="map-container">
-                <arcgis-map id="fixedMap" center="7.359, 46.231" zoom="10">
-                </arcgis-map>
+                <div id="fixedMap" style="width:100%;height:100%;"></div>
                 <div class="loading-overlay" id="fixedLoading">
                     <div class="loading-spinner"></div>
                     <div class="loading-text" style="font-size: 0.8rem; color: var(--text-muted);">Initialising...
                     </div>
-                </div>
-            </div>
-            <div class="map-footer">
-                <div class="map-footer-info">
-                    <div class="info-item">Zoom: <span id="fixedZoom">10</span></div>
                 </div>
             </div>
         </div>
@@ -230,63 +217,72 @@
         const originalStyle = await loadStyle('./style.json');
         const fixedStyle = await loadStyle('./style_no_scree_z.json');
 
+        const JS_API = 'https://js.arcgis.com/5.0'
+
         const [
-            esriConfig,
-            ArcGISMap,
-            TileInfo,
-            VectorTileLayer,
-            reactiveUtils
-        ] = await $arcgis.import([
-            "esri/config",
-            "@arcgis/core/Map.js",
-            "@arcgis/core/layers/support/TileInfo.js",
-            "@arcgis/core/layers/VectorTileLayer.js",
-            "esri/core/reactiveUtils"
+            { default: esriConfig },
+            { default: Map },
+            { default: MapView },
+            { default: VectorTileLayer },
+            { default: TileInfo },
+            { default: Basemap },
+            { default: GraphicsLayer }
+        ] = await Promise.all([
+            import(`${JS_API}/@arcgis/core/config.js`),
+            import(`${JS_API}/@arcgis/core/Map.js`),
+            import(`${JS_API}/@arcgis/core/views/MapView.js`),
+            import(`${JS_API}/@arcgis/core/layers/VectorTileLayer.js`),
+            import(`${JS_API}/@arcgis/core/layers/support/TileInfo.js`),
+            import(`${JS_API}/@arcgis/core/Basemap.js`),
+            import(`${JS_API}/@arcgis/core/layers/GraphicsLayer.js`)
         ]);
 
-        esriConfig.assetsPath = "https://js.arcgis.com/4.34/@arcgis/core/assets";
+
+        esriConfig.assetsPath = `${JS_API}/@arcgis/core/assets`;
 
         // Swisstopo Layers
         const originalLayer = new VectorTileLayer({
             style: originalStyle
+            // url: 'https://vectortiles.geo.admin.ch/styles/ch.swisstopo.lightbasemap.vt/style.json'
         });
 
         const fixedLayer = new VectorTileLayer({
             style: fixedStyle
+            // url: 'https://vectortiles.geo.admin.ch/styles/ch.swisstopo.lightbasemap.vt/style.json'
         });
 
-        // Component References
-        const originalMap = document.getElementById("originalMap");
-        const fixedMap = document.getElementById("fixedMap");
-
-        // Set Maps according to template
-        originalMap.map = new ArcGISMap({
+        // Create Map and MapView for 5.x API
+        const originalMap = new Map({
+            basemap: 'gray-vector',
             layers: [originalLayer]
         });
 
-        fixedMap.map = new ArcGISMap({
+        const fixedMap = new Map({
+            basemap: 'gray-vector',
             layers: [fixedLayer]
         });
 
-        const setupMapView = (comp, zoomId, loadingId) => {
-            comp.addEventListener("arcgisViewReadyChange", () => {
-                const view = comp.view;
-                if (!view) return;
+        const originalView = new MapView({
+            container: "originalMap",
+            map: originalMap,
+            center: [7.359, 46.231],
+            zoom: 10
+        });
 
-                view.constraints.lods = TileInfo.create().lods;
+        const fixedView = new MapView({
+            container: "fixedMap",
+            map: fixedMap,
+            center: [7.359, 46.231],
+            zoom: 10
+        });
 
-                document.getElementById(loadingId).classList.add("hidden");
-
-                reactiveUtils.watch(() => view.zoom, (val) => {
-                    if (val !== undefined) {
-                        document.getElementById(zoomId).textContent = val.toFixed(1);
-                    }
-                });
-            });
-        };
-
-        setupMapView(originalMap, "originalZoom", "originalLoading");
-        setupMapView(fixedMap, "fixedZoom", "fixedLoading");
+        // Hide loading overlays when views are ready
+        originalView.when(() => {
+            document.getElementById("originalLoading").classList.add("hidden");
+        });
+        fixedView.when(() => {
+            document.getElementById("fixedLoading").classList.add("hidden");
+        });
     </script>
 
 </body>
