@@ -180,10 +180,10 @@
                 </div>
             </div>
             <div class="map-container">
-                <arcgis-map id="vectorMap" center="7.359, 46.231" zoom="10">
+                <arcgis-map id="originalMap" center="7.359, 46.231" zoom="10">
 
                 </arcgis-map>
-                <div class="loading-overlay" id="vectorLoading">
+                <div class="loading-overlay" id="originalLoading">
                     <div class="loading-spinner"></div>
                     <div class="loading-text" style="font-size: 0.8rem; color: var(--text-muted);">Initialising...
                     </div>
@@ -191,7 +191,7 @@
             </div>
             <div class="map-footer">
                 <div class="map-footer-info">
-                    <div class="info-item">Zoom: <span id="vectorZoom">10</span></div>
+                    <div class="info-item">Zoom: <span id="originalZoom">10</span></div>
                 </div>
             </div>
         </div>
@@ -201,15 +201,15 @@
             <div class="map-header">
                 <div class="map-header-left">
                     <div>
-                        <div class="map-title">Removed scree_z from style</div>
+                        <div class="map-title">Removed "fill-pattern" property (scree_z) from style</div>
                         <div class="map-source">No crash, mountain top labels are not read correctly</div>
                     </div>
                 </div>
             </div>
             <div class="map-container">
-                <arcgis-map id="rasterMap" center="7.359, 46.231" zoom="10">
+                <arcgis-map id="fixedMap" center="7.359, 46.231" zoom="10">
                 </arcgis-map>
-                <div class="loading-overlay" id="vector2Loading">
+                <div class="loading-overlay" id="fixedLoading">
                     <div class="loading-spinner"></div>
                     <div class="loading-text" style="font-size: 0.8rem; color: var(--text-muted);">Initialising...
                     </div>
@@ -217,7 +217,7 @@
             </div>
             <div class="map-footer">
                 <div class="map-footer-info">
-                    <div class="info-item">Zoom: <span id="vector2Zoom">10</span></div>
+                    <div class="info-item">Zoom: <span id="fixedZoom">10</span></div>
                 </div>
             </div>
         </div>
@@ -228,8 +228,8 @@
             const response = await fetch(path);
             return await response.json();
         }
-        const style = await loadStyle('./style.json');
-        const style2 = await loadStyle('./style_no_scree_z.json');
+        const originalStyle = await loadStyle('./style.json');
+        const fixedStyle = await loadStyle('./style_no_scree_z.json');
 
         const [
             esriConfig,
@@ -248,25 +248,25 @@
         esriConfig.assetsPath = "https://js.arcgis.com/4.34/@arcgis/core/assets";
 
         // Swisstopo Layers
-        const vectorLayer = new VectorTileLayer({
-            style: style
+        const originalLayer = new VectorTileLayer({
+            style: originalStyle
         });
 
-        const rasterLayer = new VectorTileLayer({
-            style: style2
+        const fixedLayer = new VectorTileLayer({
+            style: fixedStyle
         });
 
         // Component References
-        const vectorMapComp = document.getElementById("vectorMap");
-        const rasterMapComp = document.getElementById("rasterMap");
+        const originalMap = document.getElementById("originalMap");
+        const fixedMap = document.getElementById("fixedMap");
 
         // Set Maps according to template
-        vectorMapComp.map = new ArcGISMap({
-            layers: [vectorLayer]
+        originalMap.map = new ArcGISMap({
+            layers: [originalLayer]
         });
 
-        rasterMapComp.map = new ArcGISMap({
-            layers: [rasterLayer]
+        fixedMap.map = new ArcGISMap({
+            layers: [fixedLayer]
         });
 
         const setupMapView = (comp, zoomId, loadingId) => {
@@ -286,8 +286,8 @@
             });
         };
 
-        setupMapView(vectorMapComp, "vectorZoom", "vectorLoading");
-        setupMapView(rasterMapComp, "vector2Zoom", "vector2Loading");
+        setupMapView(originalMap, "originalZoom", "originalLoading");
+        setupMapView(fixedMap, "fixedZoom", "fixedLoading");
     </script>
 
 </body>
