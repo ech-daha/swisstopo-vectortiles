@@ -21,115 +21,111 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        * {
+        html,
+        body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg: #1a1a1b;
-            --bg-accent: #2d2d2e;
-            --text: #e0e0e0;
-            --text-muted: #a0a0a0;
-            --accent: #4a90e2;
+            font-family: 'Inter', sans-serif;
+            background: #18191a;
+            color: #e0e0e0;
         }
 
         body {
             height: 100vh;
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
         }
 
         header {
-            padding: 10px 20px;
-            background: var(--bg-accent);
+            padding: 8px 16px;
+            background: #232425;
+            font-size: 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid #222;
         }
 
         h1 {
-            font-size: 1.1rem;
-            color: var(--accent);
+            font-size: 1rem;
+            color: #4a90e2;
+            margin: 0;
         }
 
         .header-subtitle {
-            font-size: 0.75rem;
-            color: var(--text-muted);
+            font-size: 0.8rem;
+            color: #aaa;
         }
 
         .header-badge {
             font-size: 0.7rem;
-            background: #333;
+            background: #222;
             padding: 2px 8px;
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
         main {
             flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2px;
-            background: #333;
+            display: flex;
+            gap: 8px;
+            background: #232425;
+            min-height: 0;
         }
 
         .map-card {
+            flex: 1 1 0;
             display: flex;
             flex-direction: column;
-            background: var(--bg);
-            position: relative;
+            background: #18191a;
+            min-width: 0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .map-header,
+        .map-footer {
+            padding: 6px 10px;
+            background: #232425;
+            font-size: 0.8rem;
+            color: #aaa;
         }
 
         .map-header {
-            padding: 8px 12px;
-            background: var(--bg-accent);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid #222;
+        }
+
+        .map-footer {
+            border-top: 1px solid #222;
         }
 
         .map-title {
-            font-size: 0.85rem;
+            font-size: 0.9em;
             font-weight: 600;
         }
 
         .map-source {
-            font-size: 0.7rem;
-            color: var(--text-muted);
+            font-size: 0.7em;
+            color: #888;
         }
 
         .map-container {
             flex: 1;
             position: relative;
+            min-height: 0;
         }
 
         arcgis-map {
             width: 100%;
             height: 100%;
-        }
-
-        .map-footer {
-            padding: 4px 12px;
-            font-size: 0.7rem;
-            background: var(--bg-accent);
-            display: flex;
-            justify-content: space-between;
-            color: var(--text-muted);
+            display: block;
         }
 
         .loading-overlay {
             position: absolute;
             inset: 0;
-            background: var(--bg);
+            background: rgba(24, 25, 26, 0.85);
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 10;
@@ -140,13 +136,12 @@
         }
 
         .loading-spinner {
-            width: 30px;
-            height: 30px;
+            width: 24px;
+            height: 24px;
             border: 2px solid #333;
-            border-top-color: var(--accent);
+            border-top-color: #4a90e2;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 10px;
         }
 
         @keyframes spin {
@@ -161,10 +156,9 @@
 
     <header>
         <div class="header-left">
-            <div class="logo-icon">🗺️</div>
             <div>
                 <h1>Swisstopo Vector Tile Issue</h1>
-                <div class="header-subtitle">ArcGIS Map Components – v4.34</div>
+                <div class="header-subtitle">ArcGIS Maps SDK for JS – v4.34</div>
             </div>
         </div>
         <div class="header-badge">Sion Centered</div>
