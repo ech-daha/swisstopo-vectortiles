@@ -383,7 +383,7 @@
             <div class="map-container">
                 <arcgis-map id="rasterMap" center="7.359, 46.231" zoom="8">
                 </arcgis-map>
-                <div class="loading-overlay" id="rasterLoading">
+                <div class="loading-overlay" id="vector2Loading">
                     <div class="loading-spinner"></div>
                     <div class="loading-text" style="font-size: 0.8rem; color: var(--text-muted);">Initialising...
                     </div>
@@ -391,7 +391,7 @@
             </div>
             <div class="map-footer">
                 <div class="map-footer-info">
-                    <div class="info-item">Zoom: <span id="rasterZoom">8.0</span></div>
+                    <div class="info-item">Zoom: <span id="vector2Zoom">8.0</span></div>
                 </div>
             </div>
         </div>
@@ -408,13 +408,13 @@
         const [
             esriConfig,
             ArcGISMap,
-            // TileInfo,
+            TileInfo,
             VectorTileLayer,
             reactiveUtils
         ] = await $arcgis.import([
             "esri/config",
             "@arcgis/core/Map.js",
-            // "@arcgis/core/layers/support/TileInfo.js",
+            "@arcgis/core/layers/support/TileInfo.js",
             "@arcgis/core/layers/VectorTileLayer.js",
             "esri/core/reactiveUtils"
         ]);
@@ -445,26 +445,17 @@
 
         let activeView = null;
 
-        const setupMapView = (comp, zoomId, coordsId, loadingId) => {
+        const setupMapView = (comp, zoomId, loadingId) => {
             comp.addEventListener("arcgisViewReadyChange", () => {
                 const view = comp.view;
                 if (!view) return;
 
                 // Template specific constraints
                 // Allows to zoom more by default
-                // view.constraints.lods = TileInfo.create().lods;
+                view.constraints.lods = TileInfo.create().lods;
 
                 // Sync UI
                 document.getElementById(loadingId).classList.add("hidden");
-
-                // Pointer movements for coordinates
-                view.on("pointer-move", (evt) => {
-                    const pt = view.toMap(evt);
-                    if (pt) {
-                        document.getElementById(coordsId).textContent =
-                            pt.latitude.toFixed(4) + "° N, " + pt.longitude.toFixed(4) + "° E";
-                    }
-                });
 
                 // Watch zoom level
                 reactiveUtils.watch(() => view.zoom, (val) => {
@@ -480,8 +471,8 @@
             });
         };
 
-        setupMapView(vectorMapComp, "vectorZoom", "vectorCoords", "vectorLoading");
-        setupMapView(rasterMapComp, "rasterZoom", "rasterCoords", "rasterLoading");
+        setupMapView(vectorMapComp, "vectorZoom", "vectorLoading");
+        setupMapView(rasterMapComp, "vector2Zoom", "vector2Loading");
     </script>
 
 </body>
