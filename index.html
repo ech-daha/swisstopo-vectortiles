@@ -348,7 +348,7 @@
                     <div class="map-type-icon vector">🔷</div>
                     <div>
                         <div class="map-title">Original Style</div>
-                        <div class="map-source">ch.swisstopo.lightbasemap.vt</div>
+                        <div class="map-source">Crashes when zooming</div>
                     </div>
                 </div>
             </div>
@@ -358,16 +358,14 @@
                 </arcgis-map>
                 <div class="loading-overlay" id="vectorLoading">
                     <div class="loading-spinner"></div>
-                    <div class="loading-text" style="font-size: 0.8rem; color: var(--text-muted);">Initialisierung...
+                    <div class="loading-text" style="font-size: 0.8rem; color: var(--text-muted);">Initialising...
                     </div>
                 </div>
             </div>
             <div class="map-footer">
                 <div class="map-footer-info">
-                    <div class="info-item"><span class="info-dot live"></span> Live</div>
                     <div class="info-item">Zoom: <span id="vectorZoom">8.0</span></div>
                 </div>
-                <div class="map-coords" id="vectorCoords">46.2310° N, 7.3590° E</div>
             </div>
         </div>
 
@@ -377,8 +375,8 @@
                 <div class="map-header-left">
                     <div class="map-type-icon raster">🟧</div>
                     <div>
-                        <div class="map-title">Without scree_z</div>
-                        <div class="map-source">ch.swisstopo.lightbasemap.vt</div>
+                        <div class="map-title">Removed scree_z from style</div>
+                        <div class="map-source">No crash, mountain top labels are not read correctly</div>
                     </div>
                 </div>
             </div>
@@ -387,16 +385,14 @@
                 </arcgis-map>
                 <div class="loading-overlay" id="rasterLoading">
                     <div class="loading-spinner"></div>
-                    <div class="loading-text" style="font-size: 0.8rem; color: var(--text-muted);">Initialisierung...
+                    <div class="loading-text" style="font-size: 0.8rem; color: var(--text-muted);">Initialising...
                     </div>
                 </div>
             </div>
             <div class="map-footer">
                 <div class="map-footer-info">
-                    <div class="info-item"><span class="info-dot live"></span> Live</div>
                     <div class="info-item">Zoom: <span id="rasterZoom">8.0</span></div>
                 </div>
-                <div class="map-coords" id="rasterCoords">46.2310° N, 7.3590° E</div>
             </div>
         </div>
     </main>
@@ -412,13 +408,13 @@
         const [
             esriConfig,
             ArcGISMap,
-            TileInfo,
+            // TileInfo,
             VectorTileLayer,
             reactiveUtils
         ] = await $arcgis.import([
             "esri/config",
             "@arcgis/core/Map.js",
-            "@arcgis/core/layers/support/TileInfo.js",
+            // "@arcgis/core/layers/support/TileInfo.js",
             "@arcgis/core/layers/VectorTileLayer.js",
             "esri/core/reactiveUtils"
         ]);
@@ -456,7 +452,7 @@
 
                 // Template specific constraints
                 // Allows to zoom more by default
-                view.constraints.lods = TileInfo.create().lods;
+                // view.constraints.lods = TileInfo.create().lods;
 
                 // Sync UI
                 document.getElementById(loadingId).classList.add("hidden");
